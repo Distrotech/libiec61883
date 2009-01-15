@@ -973,55 +973,19 @@ iec61883_cmp_normalize_output (raw1394handle_t handle, nodeid_t node)
 
 	DEBUG ("iec61883_cmp_normalize_output: node %d\n", (int) node & 0x3f);
 
-	// Check for plugs on output
+	/* Check for plugs on output */
 	result = iec61883_get_oMPR (handle, node, &ompr);
 	if (result < 0)
 		return result;
 	
-	// locate an ouput plug that has a connection
-	for (oplug = 0; oplug < ompr.n_plugs; oplug++) {
-		if (iec61883_get_oPCRX (handle, node, &opcr, oplug) == 0) {
-			if (opcr.online && (opcr.n_p2p_connections > 0 || 
-				                opcr.bcast_connection == 1)) {
+	/* Locate an output plug that has a connection,
+	 * make sure the plug's channel is allocated with IRM */
+	for (oplug = 0; oplug < ompr.n_plugs; oplug++)
+		if (iec61883_get_oPCRX (handle, node, &opcr, oplug) == 0
+		    && opcr.online
+		    && (opcr.n_p2p_connections > 0 || opcr.bcast_connection == 1)
+		    && raw1394_channel_modify (handle, opcr.channel, RAW1394_MODIFY_ALLOC) < 0)
+			DEBUG ("Channel %d already allocated, or can't reach IRM", opcr.channel);
 
-				// Make sure the plug's channel is allocated with IRM
-				quadlet_t buffer;
-				nodeaddr_t addr = CSR_REGISTER_BASE;
-				unsigned int c = opcr.channel;
-				quadlet_t compare, swap = 0;
-				quadlet_t new;
-				
-				if (c > 31 && c < 64) {
-					addr += CSR_CHANNELS_AVAILABLE_LO;
-					c -= 32;
-				} else if (c < 64)
-					addr += CSR_CHANNELS_AVAILABLE_HI;
-				else
-					FAIL ("Invalid channel");
-				c = 31 - c;
-
-				result = iec61883_cooked_read (handle, raw1394_get_irm_id (handle), addr, 
-					sizeof (quadlet_t), &buffer);
-				if (result < 0)
-					FAIL ("Failed to get channels available.");
-				
-				buffer = ntohl (buffer);
-				DEBUG ("channels available before: 0x%08x", buffer);
-
-				if ((buffer & (1 << c)) != 0) {
-					swap = htonl (buffer & ~(1 << c));
-					compare = htonl (buffer);
-
-					result = raw1394_lock (handle, raw1394_get_irm_id (handle), addr,
-							   EXTCODE_COMPARE_SWAP, swap, compare, &new);
-					if ( (result < 0) || (new != compare) ) {
-						FAIL ("Failed to modify channel %d", opcr.channel);
-					}
-					DEBUG ("channels available after: 0x%08x", ntohl (swap));
-				}
-			}
-		}
-	}
-		
-	return result;
+	return 0;
 }
