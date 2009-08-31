@@ -94,9 +94,8 @@ iec61883_dv_recv_init (raw1394handle_t handle,
 	dv->put_data = put_data;
 	dv->get_data = NULL;
 	dv->callback_data = callback_data;
-	dv->buffer_packets = 775;
-	dv->prebuffer_packets = 0;
-	dv->irq_interval = 1;
+	dv->buffer_packets = 1000;
+	dv->irq_interval = 250;
 	dv->synch = 0;
 	dv->speed = RAW1394_ISO_SPEED_100;
 
@@ -221,9 +220,6 @@ dv_recv_handler (raw1394handle_t handle,
 		if (dv->put_data (data + 8, DIF_BLOCK_SIZE, dropped, dv->callback_data) < 0)
 			result = RAW1394_ISO_ERROR;
 	}
-static unsigned drop = 0;
-drop += dropped;
-if (dropped) fprintf( stderr, "total dropped %u\n", drop);
 	if (result == RAW1394_ISO_OK && dropped)
 		result = RAW1394_ISO_DEFER;
 			
@@ -362,6 +358,12 @@ iec61883_dv_fb_init (raw1394handle_t handle,
 	}
 	
 	return fb;
+}
+
+iec61883_dv_t
+iec61883_dv_fb_get_dv(iec61883_dv_fb_t fb)
+{
+	return (fb != NULL ) ? fb->dv : NULL;
 }
 
 int

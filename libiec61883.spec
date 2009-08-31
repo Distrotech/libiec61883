@@ -1,13 +1,13 @@
 %define prefix /usr
 
 Name: libiec61883
-Version: 1.0.0
+Version: 1.1.0
 Release: 1
 License: LGPL
 Group: Libraries
-Source: http://linux1394.org/dl/libiec61883-1.0.0.tar.gz
+Source: http://linux1394.org/dl/libiec61883-1.1.0.tar.gz
 URL: http://linux1394.org
-BuildRoot: /var/tmp/libiec61883-1.0.0-root
+BuildRoot: /var/tmp/libiec61883-1.1.0-root
 Summary: Streaming library for IEEE1394
 
 %changelog

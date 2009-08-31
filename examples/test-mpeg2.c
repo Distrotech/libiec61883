@@ -88,7 +88,7 @@ static void mpeg2_transmit (raw1394handle_t handle, FILE *f, int pid, int channe
 	{
 		int fd = raw1394_get_fd (handle);
 		struct timeval tv;
-		fd_set wfds;
+		fd_set rfds;
 		int result = 0;
 		
 		signal (SIGINT, sighandler);
@@ -97,12 +97,12 @@ static void mpeg2_transmit (raw1394handle_t handle, FILE *f, int pid, int channe
 		fprintf (stderr, "Starting to transmit\n");
 
 		do {
-			FD_ZERO (&wfds);
-			FD_SET (fd, &wfds);
+			FD_ZERO (&rfds);
+			FD_SET (fd, &rfds);
 			tv.tv_sec = 0;
 			tv.tv_usec = 20000;
 			
-			if (select (fd + 1, NULL, &wfds, NULL, &tv) > 0)
+			if (select (fd + 1, &rfds, NULL, NULL, &tv) > 0)
 				result = raw1394_loop_iterate (handle);
 			
 		} while (g_done == 0 && result == 0);
@@ -201,7 +201,7 @@ int main (int argc, char *argv[])
 					mpeg2_receive (handle, f, 63);
 				}
 			} else {
-				mpeg2_receive (handle, f, 63);
+				mpeg2_receive (handle, f, 0);
 			}
 			if (f != stdout)
 				fclose (f);

@@ -33,7 +33,11 @@ extern "C" {
 #else
 #define DEBUG(s, args...)
 #endif
+#ifndef QUIET
 #define WARN(s, args...) {fprintf(stderr, "libiec61883 warning: " s "\n", ## args);}
+#else
+#define WARN(s, args...) {}
+#endif
 #define FAIL(s, args...) {fprintf(stderr, "libiec61883 error: " s "\n", ## args);return(-1);}
 
 /*

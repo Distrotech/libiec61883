@@ -84,7 +84,6 @@ iec61883_mpeg2_recv_init(raw1394handle_t handle,
 	mpeg->get_data = NULL;
 	mpeg->callback_data = callback_data;
 	mpeg->buffer_packets = 1000;
-	mpeg->prebuffer_packets = 1000;
 	mpeg->irq_interval = 250;
 	mpeg->synch = 0;
 	mpeg->speed = RAW1394_ISO_SPEED_200;

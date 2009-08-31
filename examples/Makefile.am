@@ -1,6 +1,8 @@
 
 noinst_PROGRAMS = test-amdtp test-dv test-mpeg2 test-plugs
 bin_PROGRAMS = plugreport plugctl
+man_MANS = plugreport.1 plugctl.1
+EXTRA_DIST = plugreport.1 plugctl.1
 
 test_amdtp_SOURCES = test-amdtp.c
 test_dv_SOURCES = test-dv.c

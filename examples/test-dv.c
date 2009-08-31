@@ -19,7 +19,7 @@
 
 #include "../src/iec61883.h"
 #include <stdio.h>
-#include <sys/select.h>
+#include <sys/poll.h>
 #include <signal.h>
 #include <string.h>
 #include <stdlib.h>
@@ -40,9 +40,9 @@ static int read_frame (unsigned char *data, int n, unsigned int dropped, void *c
 	FILE *f = (FILE*) callback_data;
 
 	if (n == 1)
-		if (fread (data, 480, 1, f) < 1) {
+		if (fread (data, 480, 1, f) < 1)
 			return -1;
-		} else
+		else
 			return 0;
 	else
 		return 0;
@@ -59,9 +59,11 @@ static void dv_receive( raw1394handle_t handle, FILE *f, int channel)
 		
 	if (frame && iec61883_dv_fb_start (frame, channel) == 0)
 	{
-		int fd = raw1394_get_fd (handle);
-		struct timeval tv;
-		fd_set rfds;
+		struct pollfd pfd = {
+			fd: raw1394_get_fd (handle),
+			events: POLLIN | POLLPRI,
+			revents: 0
+		};
 		int result = 0;
 		
 		signal (SIGINT, sighandler);
@@ -69,12 +71,7 @@ static void dv_receive( raw1394handle_t handle, FILE *f, int channel)
 		fprintf (stderr, "Starting to receive\n");
 
 		do {
-			FD_ZERO (&rfds);
-			FD_SET (fd, &rfds);
-			tv.tv_sec = 0;
-			tv.tv_usec = 20000;
-			
-			if (select (fd + 1, &rfds, NULL, NULL, &tv) > 0)
+			if (poll (&pfd, 1, 100) > 0 && (pfd.revents & POLLIN))
 				result = raw1394_loop_iterate (handle);
 			
 		} while (g_done == 0 && result == 0);
@@ -96,9 +93,11 @@ static void dv_transmit( raw1394handle_t handle, FILE *f, int channel)
 	
 	if (dv && iec61883_dv_xmit_start (dv, channel) == 0)
 	{
-		int fd = raw1394_get_fd (handle);
-		struct timeval tv;
-		fd_set rfds;
+		struct pollfd pfd = {
+			fd: raw1394_get_fd (handle),
+			events: POLLIN,
+			revents: 0
+		};
 		int result = 0;
 		
 		signal (SIGINT, sighandler);
@@ -106,12 +105,8 @@ static void dv_transmit( raw1394handle_t handle, FILE *f, int channel)
 		fprintf (stderr, "Starting to transmit %s\n", ispal ? "PAL" : "NTSC");
 
 		do {
-			FD_ZERO (&rfds);
-			FD_SET (fd, &rfds);
-			tv.tv_sec = 0;
-			tv.tv_usec = 20000;
-			
-			if (select (fd + 1, &rfds, NULL, NULL, &tv) > 0)
+			int r = 0;
+			if ((r = poll (&pfd, 1, 100)) > 0 && (pfd.revents & POLLIN))
 				result = raw1394_loop_iterate (handle);
 			
 		} while (g_done == 0 && result == 0);

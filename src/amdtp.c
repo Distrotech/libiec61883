@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <assert.h>
+#include <string.h>
 
 #include "iec61883.h"
 #include "iec61883-private.h"
@@ -277,7 +278,6 @@ iec61883_amdtp_recv_init (raw1394handle_t handle,
 	amdtp->put_data = put_data;
 	amdtp->callback_data = callback_data;
 	amdtp->buffer_packets = 1000;
-	amdtp->prebuffer_packets = 1000;
 	amdtp->irq_interval = 250;
 	amdtp->synch = 0;
 

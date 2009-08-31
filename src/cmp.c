@@ -1120,21 +1120,6 @@ iec61883_cmp_disconnect (raw1394handle_t handle, nodeid_t output, int oplug,
 							result = raw1394_bandwidth_modify (handle, bandwidth, RAW1394_MODIFY_FREE);
 					}
 				}
-			} else if (opcr.bcast_connection == 1) {
-				// XXX: only node which established broadcast connection is
-				// really allowed to tear it down. But we want to handle the
-				// more common case of repeated use of iec61883_cmp_connect() 
-				// and iec61883_cmp_disconnect() in simple scenarios
-				// where we want some simple way to release the bandwidth
-				// and channel.
-				opcr.bcast_connection = 0;
-				result = iec61883_set_oPCRX (handle, output, opcr, oplug);
-				if (result == 0) {
-					// release channel and bandwidth
-					result = raw1394_channel_modify (handle, channel, RAW1394_MODIFY_FREE);
-					if (result == 0)
-						result = raw1394_bandwidth_modify (handle, bandwidth, RAW1394_MODIFY_FREE);
-				}
 			}
 		}
 		if (iplug != impr.n_plugs) {
@@ -1177,21 +1162,6 @@ iec61883_cmp_disconnect (raw1394handle_t handle, nodeid_t output, int oplug,
 					if (result == 0)
 						result = raw1394_bandwidth_modify (handle, bandwidth, RAW1394_MODIFY_FREE);
 				}
-			} else if (opcr.bcast_connection == 1) {
-				// XXX: only node which established broadcast connection is
-				// really allowed to tear it down. But we want to handle the
-				// more common case of repeated use of iec61883_cmp_connect() 
-				// and iec61883_cmp_disconnect() in simple scenarios
-				// where we want some simple way to release the bandwidth
-				// and channel.
-				opcr.bcast_connection = 0;
-				result = iec61883_set_oPCRX (handle, output, opcr, oplug);
-				if (result == 0) {
-					// release channel and bandwidth
-					result = raw1394_channel_modify (handle, channel, RAW1394_MODIFY_FREE);
-					if (result == 0)
-						result = raw1394_bandwidth_modify (handle, bandwidth, RAW1394_MODIFY_FREE);
-				}
 			}
 		} else {
 			// release channel and bandwidth
@@ -1225,21 +1195,6 @@ iec61883_cmp_disconnect (raw1394handle_t handle, nodeid_t output, int oplug,
 				// multiple capture sessions.
 				result = iec61883_set_iPCRX (handle, input, ipcr, iplug);
 				if (result == 0 && ipcr.n_p2p_connections == 0) {
-					// release channel and bandwidth
-					result = raw1394_channel_modify (handle, channel, RAW1394_MODIFY_FREE);
-					if (result == 0)
-						result = raw1394_bandwidth_modify (handle, bandwidth, RAW1394_MODIFY_FREE);
-				}
-			} else if (ipcr.bcast_connection == 1) {
-				// XXX: only node which established broadcast connection is
-				// really allowed to tear it down. But we want to handle the
-				// more common case of repeated use of iec61883_cmp_connect() 
-				// and iec61883_cmp_disconnect() in simple scenarios
-				// where we want some simple way to release the bandwidth
-				// and channel.
-				ipcr.bcast_connection = 0;
-				result = iec61883_set_iPCRX (handle, input, ipcr, iplug);
-				if (result == 0) {
 					// release channel and bandwidth
 					result = raw1394_channel_modify (handle, channel, RAW1394_MODIFY_FREE);
 					if (result == 0)

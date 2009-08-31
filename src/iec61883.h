@@ -576,6 +576,17 @@ iec61883_dv_fb_init (raw1394handle_t handle,
 		void *callback_data);
 
 /**
+ * iec61883_dv_fb_get_dv - get the parent iec61883_dv object
+ * @dvfb: pointer to iec61883_dv_fb object
+ *
+ * Returns:
+ * A pointer to an iec61883_dv object upon success or NULL on failure.
+ **/
+
+iec61883_dv_t
+iec61883_dv_fb_get_dv(iec61883_dv_fb_t dvfb);
+
+/**
  * iec61883_dv_fb_start - start receiving DV frames
  * @dvfb: pointer to iec61883_dv_fb object
  * @channel: the isochronous channel number
