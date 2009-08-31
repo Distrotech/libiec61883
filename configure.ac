@@ -1,7 +1,7 @@
 # process this file with autoconf to get a configure script
 
 AC_INIT(Makefile.am)
-AM_INIT_AUTOMAKE(libiec61883, 1.1.0)
+AM_INIT_AUTOMAKE(libiec61883, 1.2.0)
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
@@ -11,11 +11,14 @@ AC_PROG_INSTALL
 AC_C_CONST
 AC_C_BIGENDIAN
 
+AC_DEFINE(_GNU_SOURCE, 1, [Enable GNU extensions of glibc, notably large file support])
+AC_SYS_LARGEFILE
+
 PKG_CHECK_MODULES(LIBRAW1394, libraw1394 >= 1.2.1)
 
 # set the libtool so version numbers
 lt_current=1
-lt_revision=0
+lt_revision=1
 lt_age=1
 
 AC_SUBST(lt_current)

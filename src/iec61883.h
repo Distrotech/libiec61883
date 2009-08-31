@@ -88,11 +88,11 @@ typedef struct iec61883_amdtp* iec61883_amdtp_t;
  * 0 for success or -1 for failure
  */
 typedef int 
-(*iec61883_amdtp_recv_t) (iec61883_amdtp_t amdtp, char *data, int nsamples, 
+(*iec61883_amdtp_recv_t) (iec61883_amdtp_t amdtp, unsigned char *data, int nsamples, 
 	unsigned int dbc, unsigned int dropped, void *callback_data);
 
 typedef int 
-(*iec61883_amdtp_xmit_t) (iec61883_amdtp_t amdtp, char *data, int nevents, 
+(*iec61883_amdtp_xmit_t) (iec61883_amdtp_t amdtp, unsigned char *data, int nevents, 
 	unsigned int dbc, unsigned int dropped, void *callback_data);
 
 /**

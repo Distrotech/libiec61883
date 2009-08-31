@@ -182,17 +182,20 @@ iec61883_dv_xmit_start (struct iec61883_dv *dv, int channel)
 	assert (dv != NULL);
 	unsigned int max_packet_size = iec61883_cip_get_max_packet_size (&dv->cip);
 	
-	if ((result = raw1394_iso_xmit_init (dv->handle, 
+	result = raw1394_iso_xmit_init (dv->handle,
 		dv_xmit_handler,
-		dv->buffer_packets, 
+		dv->buffer_packets,
 		max_packet_size,
 		channel,
 		dv->speed,
-		dv->irq_interval)) == 0)
-	
+		dv->irq_interval);
+
+	if ( result == 0 )
+	{
 		dv->total_dropped = 0;
 		dv->channel = channel;
 		result = raw1394_iso_xmit_start (dv->handle, -1, dv->prebuffer_packets);
+	}
 	
 	return result;
 }
@@ -280,11 +283,12 @@ iec61883_dv_close (iec61883_dv_t dv)
 static int
 dv_fb_recv (unsigned char *data, int len, unsigned int dropped, void *callback_data)
 {
+	int result = 0;
+	if (len != 480) return result;
 	struct iec61883_dv_fb *fb = (struct iec61883_dv_fb *)callback_data;
 	int section_type = data[0] >> 5; /* section type is in bits 5 - 7 */
 	int dif_sequence = data[1] >> 4; /* dif sequence number is in bits 4 - 7 */
 	int dif_block = data[2];
-	int result = 0;
 	
 	assert (fb != NULL);
 	/* test for start of frame */
@@ -303,27 +307,28 @@ dv_fb_recv (unsigned char *data, int len, unsigned int dropped, void *callback_d
 		}
 	} 
 	/* if not the first frame */
-	if (fb->ff == 0) {
+	if (fb->ff == 0 && dif_sequence < 12) {
+		unsigned char *p = fb->data + dif_sequence * 150 * 80;
 		fb->len += len;
 		switch ( section_type ) {
 			case 0:    /* 1 Header block */
-				memcpy( fb->data + dif_sequence * 150 * 80, data, 480 );
+				memcpy( p, data, len );
 				break;
 			case 1:    /* 2 Subcode blocks */
-				memcpy( fb->data + dif_sequence * 150 * 80 + 
-					( 1 + dif_block ) * 80, data, 480 );
+				if (dif_block < 2)
+					memcpy( p + ( 1 + dif_block ) * 80, data, len );
 				break;
 			case 2:    /* 3 VAUX blocks */
-				memcpy( fb->data + dif_sequence * 150 * 80 + 
-					( 3 + dif_block ) * 80, data, 480 );
+				if (dif_block < 3)
+					memcpy( p + ( 3 + dif_block ) * 80, data, len );
 				break;
 			case 3:    /* 9 Audio blocks interleaved with video */
-				memcpy( fb->data + dif_sequence * 150 * 80 + 
-					( 6 + dif_block * 16 ) * 80, data, 480 );
+				if (dif_block < 9)
+					memcpy( p + ( 6 + dif_block * 16 ) * 80, data, len );
 				break;
 			case 4:    /* 135 Video blocks interleaved with audio */
-				memcpy( fb->data + dif_sequence * 150 * 80 + 
-					( 7 + ( dif_block / 15 ) + dif_block ) * 80, data, 480 );
+				if (dif_block < 135)
+					memcpy( p + ( 7 + ( dif_block / 15 ) + dif_block ) * 80, data, len );
 				break;
 			default:
 				break;

@@ -142,7 +142,6 @@ struct iec61883_cip {
 	struct iec61883_fraction samples_per_cycle;
 	int dbc, dbs;
 	int cycle_count;
-	int cycle_count2;
 	int mode;
 	int syt_interval;
 	int dimension;
@@ -154,6 +153,8 @@ struct iec61883_cip {
 void
 iec61883_cip_init(struct iec61883_cip *cip, int format, int fdf,
 		int rate, int dbs, int syt_interval);
+void
+iec61883_cip_resync(struct iec61883_cip *ptz, int cycle);
 void 
 iec61883_cip_set_transmission_mode(struct iec61883_cip *ptz, int mode);
 
@@ -234,6 +235,7 @@ struct iec61883_amdtp {
 	int rate;
 	int iec958_rate_code;
 	int sample_format;
+	int iec958_frame_count;
 	iec61883_amdtp_recv_t put_data;
 	iec61883_amdtp_xmit_t get_data;
 	void *callback_data;

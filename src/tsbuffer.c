@@ -120,7 +120,7 @@ struct mpeg2_ts
 	u8 data[ 176 ];
 };
 
-static u8
+static int
 ts_get_pid( struct mpeg2_ts *ts )
 {
 	return ( ( ts->ts_header[ 1 ] << 8 ) + ts->ts_header[ 2 ] ) & 0x1fff;
@@ -261,7 +261,7 @@ tsbuffer_read_to_next_pcr (tsbuffer_t this)
 
 		if (tsbuffer_read_ts (this) == 0)
 			return 0;
-		if (this->selected_pid == -1)
+		if (this->selected_pid == -1 && ts_has_pcr(iec61883_deque_back (this->ts_queue), -1))
 			this->selected_pid = ts_get_pid (iec61883_deque_back (this->ts_queue));
 
 	} while (ts_has_pcr (iec61883_deque_back (this->ts_queue), this->selected_pid) == 0);

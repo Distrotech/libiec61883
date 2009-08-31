@@ -434,18 +434,45 @@ allocate_channel (raw1394handle_t handle)
 	return c;
 }
 
-int
-iec61883_cmp_connect (raw1394handle_t handle, nodeid_t output, int *oplug, 
-	nodeid_t input, int *iplug, int *bandwidth)
+/**
+ * cmp_connect - establish, re-establish or overlay connection automatically
+ * @handle: a libraw1394 handle
+ * @output: node id of the transmitter
+ * @oplug: the output plug to use. If -1, find the first online plug, and
+ * upon return, contains the plug number used.
+ * @input: node id of the receiver
+ * @iplug: the input plug to use. If -1, find the first online plug, and
+ * upon return, contains the plug number used.
+ * @bandwidth: an input/output parameter. As an input this is a boolean that
+ * indicates whether to perform bandwidth allocation. Supply 0 to skip bandwidth
+ * allocation; any other value permits it. Upon return, actual bandwidth allocation
+ * units allocated are returned, which you supply to the disconnect routine.
+ * @channel: if channel is < 0, the function will establish a new connection.
+ * oherwise, it will try to re-establish an existing connection.
+ *
+ * This is a high level function that attempts to be as smart as possible, but
+ * it gives point-to-point connections higher priority over broadcast connections.
+ * It can automatically handle situations where either @input and/or @output does
+ * not implement plug control registers. However, if one node implements plug
+ * registers it assumes the other node has some sort of manual channel selection
+ * (i.e., through software or a control panel).
+ *
+ * Returns:
+ * It returns the isochronous channel number selected or -1 if the function has
+ * failed for any reason.
+ **/
+static int
+cmp_connect (raw1394handle_t handle, nodeid_t output, int *oplug, 
+             nodeid_t input, int *iplug, int *bandwidth, int channel)
 {
 	struct iec61883_oMPR ompr;
 	struct iec61883_iMPR impr;
 	struct iec61883_oPCR opcr;
 	struct iec61883_iPCR ipcr;
 	int oplug_online = -1, iplug_online = -1;
-	int channel = -1;
 	int skip_bandwidth = (*bandwidth == 0);
 	int failure = 0;
+	int new_connection = (channel < 0);
 	
 	DEBUG ("%s", __FUNCTION__);
 	
@@ -515,7 +542,11 @@ iec61883_cmp_connect (raw1394handle_t handle, nodeid_t output, int *oplug,
 					}
 				}
 				if (!failure) {
-					channel = allocate_channel (handle);
+					if (new_connection) {
+						channel = allocate_channel (handle);
+					} else {
+						raw1394_channel_modify (handle, channel, RAW1394_MODIFY_ALLOC);
+					}
 					if (iec61883_cmp_create_p2p (handle, output, *oplug, input, *iplug, 
 						channel, speed) < 0) {
 						// release channel and bandwidth
@@ -600,10 +631,14 @@ iec61883_cmp_connect (raw1394handle_t handle, nodeid_t output, int *oplug,
 					}
 				}
 				if (!failure) {
-					channel = allocate_channel (handle);
+					if( new_connection ) {
+						channel = allocate_channel (handle);
+					} else {
+						raw1394_channel_modify (handle, channel, RAW1394_MODIFY_ALLOC);
+					}
 					if (iec61883_cmp_create_p2p_output (handle, output, *oplug, 
 						channel, ompr.data_rate) == 0) {
-						WARN ("Established connection on channel %d.\n"
+						DEBUG ("Established connection on channel %d.\n"
 							  "You may need to manually set the channel on the receiving node.",
 							  channel);
 					} else {
@@ -626,7 +661,7 @@ iec61883_cmp_connect (raw1394handle_t handle, nodeid_t output, int *oplug,
 					if (iec61883_cmp_overlay_p2p_output (handle, output, oplug_online) < 0)
 						channel = -1;
 			}
-			WARN ("Overlayed connection on channel %d.\n"
+			DEBUG ("Overlayed connection on channel %d.\n"
 				  "You may need to manually set the channel on the receiving node.",
 				  channel);
 		} else {
@@ -688,9 +723,13 @@ iec61883_cmp_connect (raw1394handle_t handle, nodeid_t output, int *oplug,
 					}
 				}
 				if (!failure) {
-					channel = allocate_channel (handle);
+					if( new_connection ) {
+						channel = allocate_channel (handle);
+					} else {
+						raw1394_channel_modify (handle, channel, RAW1394_MODIFY_ALLOC);
+					}
 					if (iec61883_cmp_create_p2p_input (handle, input, *iplug, channel) == 0) {
-						WARN ("Established connection on channel %d.\n"
+						DEBUG ("Established connection on channel %d.\n"
 							  "You may need to manually set the channel on the transmitting node.",
 							  channel);
 					} else {
@@ -713,13 +752,15 @@ iec61883_cmp_connect (raw1394handle_t handle, nodeid_t output, int *oplug,
 					if (iec61883_cmp_overlay_p2p_input (handle, input, iplug_online) < 0)
 						channel = -1;
 			}
-			WARN ("Overlayed connection on channel %d.\n"
+			DEBUG ("Overlayed connection on channel %d.\n"
 				  "You may need to manually set the channel on the transmitting node.",
 				  channel);
 		} else {
 			WARN ("Receiving node has no plugs online!");
 			// failover to broadcast
 			// allocate bandwidth based upon first input plug
+			*iplug = -1;
+
 			if (!skip_bandwidth) {
 				*bandwidth = iec61883_cmp_calc_bandwidth (handle, input, 0, impr.data_rate);
 				if (*bandwidth < 1) {
@@ -753,311 +794,16 @@ int
 iec61883_cmp_reconnect (raw1394handle_t handle, nodeid_t output, int *oplug,
 		nodeid_t input, int *iplug, int *bandwidth, int channel)
 {
-	struct iec61883_oMPR ompr;
-	struct iec61883_iMPR impr;
-	struct iec61883_oPCR opcr;
-	struct iec61883_iPCR ipcr;
-	int oplug_online = -1, iplug_online = -1;
-	int skip_bandwidth = (*bandwidth == 0);
-	int failure = 0;
+	/* Passing an existing channel means it is a reconnection. */
+	return cmp_connect (handle, output, oplug, input, iplug, bandwidth, channel);
+}
 
-	DEBUG ("%s", __FUNCTION__);
-	
-	*bandwidth = 0;
-
-	// Check for plugs on output
-	if (iec61883_get_oMPR (handle, output, &ompr) < 0)
-		ompr.n_plugs = 0;
-
-	// Check for plugs on input
-	if (iec61883_get_iMPR (handle, input, &impr) < 0)
-		impr.n_plugs = 0;
-
-	DEBUG ("output node %d #plugs=%d, input node %d #plugs=%d", output & 0x3f,
-	       ompr.n_plugs, input & 0x3f, impr.n_plugs);
-
-	if (ompr.n_plugs > 0 && impr.n_plugs > 0) {
-		// establish or overlay point-to-point
-
-		// speed to use is lesser of output and input
-		unsigned int speed = impr.data_rate < ompr.data_rate ? impr.data_rate : ompr.data_rate;
-
-		// determine if output has plug available
-		if (*oplug < 0) {
-			for (*oplug = 0; *oplug < ompr.n_plugs; (*oplug)++) {
-				if (iec61883_get_oPCRX (handle, output, &opcr, *oplug) == 0) {
-					// get first online plug
-					if (oplug_online == -1 && opcr.online)
-						oplug_online = *oplug;
-					if (opcr.online && opcr.n_p2p_connections == 0)
-						break;
-				}
-			}
-		} else if (iec61883_get_oPCRX (handle, output, &opcr, *oplug) < 0)
-			FAIL ("Failed to get plug %d for output node", *oplug);
-
-		// determine if input has plug available
-		if (*iplug < 0) {
-			for (*iplug = 0; *iplug < impr.n_plugs; (*iplug)++) {
-				if (iec61883_get_iPCRX (handle, input, &ipcr, *iplug) == 0) {
-					// get first online plug
-					if (iplug_online == -1 && ipcr.online)
-						iplug_online = *iplug;
-					if (ipcr.online && ipcr.n_p2p_connections == 0)
-						break;
-				}
-			}
-		} else if (iec61883_get_iPCRX (handle, input, &ipcr, *iplug) < 0)
-			FAIL ("Failed to get plug %d for input node", *iplug);
-
-		if (*oplug < ompr.n_plugs && *iplug < impr.n_plugs) {
-
-			if (opcr.bcast_connection == 1) {
-				channel = opcr.channel;
-				iec61883_cmp_overlay_bcast (handle, output, *oplug, input, *iplug);
-			} else {
-				// allocate bandwidth
-				if (!skip_bandwidth) {
-					*bandwidth = iec61883_cmp_calc_bandwidth (handle, output, *oplug, speed);
-					if (*bandwidth < 1) {
-						WARN ("Failed to calculate bandwidth.");
-						failure = 1;
-					} else if (raw1394_bandwidth_modify (handle, *bandwidth, RAW1394_MODIFY_ALLOC) < 0) {
-						WARN ("Failed to allocate bandwidth.");
-						failure = 1;
-					}
-				}
-				if (!failure) {
-					raw1394_channel_modify (handle, channel, RAW1394_MODIFY_ALLOC);
-					if (iec61883_cmp_create_p2p (handle, output, *oplug, input, *iplug, channel, speed) < 0) {
-						// release channel and bandwidth
-						failure = raw1394_channel_modify (handle, channel, RAW1394_MODIFY_FREE);
-						if (!failure)
-							raw1394_bandwidth_modify (handle, *bandwidth, RAW1394_MODIFY_FREE);
-						channel = -1;
-					}
-				}
-			}
-
-		} else if (*iplug < impr.n_plugs && oplug_online > -1 ) {
-			// get the channel from output - can not start another transmission
-			// on an existing channel, but can receive from multiple nodes/plugs
-			*oplug = oplug_online;
-			if (iec61883_get_oPCRX (handle, output, &opcr, oplug_online) == 0) {
-				channel = opcr.channel;
-				if (opcr.bcast_connection == 1) {
-					iec61883_cmp_overlay_bcast (handle, output, oplug_online, input, *iplug);
-				} else {
-					if (iec61883_cmp_create_p2p_input (handle, input, *iplug, channel) < 0)
-						channel = -1;
-					else if (iec61883_cmp_overlay_p2p_output (handle, output, oplug_online) < 0)
-						channel = -1;
-				}
-			}
-
-		} else if (oplug_online != -1 && iplug_online > -1) {
-			// get channel from output
-			*oplug = oplug_online;
-			if (iec61883_get_oPCRX (handle, output, &opcr, oplug_online) == 0) {
-				channel = opcr.channel;
-				if (iec61883_cmp_overlay_p2p (handle, output, oplug_online, input, iplug_online) < 0)
-					channel = -1;
-			}
-		} else {
-			WARN ("All the plugs on both nodes are offline!");
-			*oplug = *iplug = -1;
-		}
-
-	} else if (ompr.n_plugs > 0) {
-		// establish or overlay half point-to-point on output
-		*iplug = -1;
-
-		// determine if output has plug available
-		if (*oplug < 0) {
-			for (*oplug = 0; *oplug < ompr.n_plugs; (*oplug)++) {
-				if (iec61883_get_oPCRX (handle, output, &opcr, *oplug) == 0) {
-					// get first online plug
-					if (oplug_online == -1 && opcr.online)
-						oplug_online = *oplug;
-					if (opcr.online && opcr.n_p2p_connections == 0)
-						break;
-				}
-			}
-		} else if (iec61883_get_oPCRX (handle, output, &opcr, *oplug) < 0)
-			FAIL ("Failed to get plug %d for output node", *oplug);
-
-		if (*oplug < ompr.n_plugs) {
-			if (opcr.bcast_connection == 1) {
-				channel = opcr.channel;
-			} else {
-				// establish
-				// XXX: the input must provide manual channel selection or we should
-				// do a broadcast. Example use case: DV device is output and local
-				// node is input, but software allows channel select. Failure use
-				// case: local node is output but input device has no channel selection!
-				// Both use cases are actually quite common. Should we provide a
-				// parameter to offer a hint in case operator knows something more
-				// about the device than firewire interfaces on it suggest?
-
-				// allocate bandwidth
-				if (!skip_bandwidth) {
-					*bandwidth = iec61883_cmp_calc_bandwidth (handle, output, *oplug, ompr.data_rate);
-					if (*bandwidth < 1) {
-						WARN ("Failed to calculate bandwidth.");
-						failure = 1;
-					} else if (raw1394_bandwidth_modify (handle, *bandwidth, RAW1394_MODIFY_ALLOC) < 0) {
-						WARN ("Failed to allocate bandwidth.");
-						failure = 1;
-					}
-				}
-				if (!failure) {
-					raw1394_channel_modify (handle, channel, RAW1394_MODIFY_ALLOC);
-					if (iec61883_cmp_create_p2p_output (handle, output, *oplug, channel, ompr.data_rate) == 0) {
-						WARN ("Established connection on channel %d.\n"
-						      "You may need to manually set the channel on the receiving node.",
-						      channel);
-					} else {
-						// release channel and bandwidth
-						failure = raw1394_channel_modify (handle, channel, RAW1394_MODIFY_FREE);
-						if (!failure)
-							raw1394_bandwidth_modify (handle, *bandwidth, RAW1394_MODIFY_FREE);
-						channel = -1;
-					}
-				}
-			}
-
-		} else if (oplug_online > -1) {
-			// overlay
-			// get channel from output
-			*oplug = oplug_online;
-			if (iec61883_get_oPCRX (handle, output, &opcr, oplug_online) == 0) {
-				channel = opcr.channel;
-				if (opcr.bcast_connection != 1)
-					if (iec61883_cmp_overlay_p2p_output (handle, output, oplug_online) < 0)
-						channel = -1;
-			}
-			WARN ("Overlayed connection on channel %d.\n"
-			      "You may need to manually set the channel on the receiving node.",
-			      channel);
-		} else {
-			WARN ("Transmission node has no plugs online!");
-			// failover to broadcast
-			// allocate bandwidth based upon first out plug
-			*oplug = -1;
-			if (!skip_bandwidth) {
-				*bandwidth = iec61883_cmp_calc_bandwidth (handle, output, 0, ompr.data_rate);
-				if (*bandwidth < 1) {
-					WARN ("Failed to calculate bandwidth.");
-					failure = 1;
-				} else if (raw1394_bandwidth_modify (handle, *bandwidth, RAW1394_MODIFY_ALLOC) < 0) {
-					WARN ("Failed to allocate bandwidth.");
-					failure = 1;
-				}
-			}
-			if (!failure) {
-				if (raw1394_channel_modify (handle, ompr.bcast_channel, RAW1394_MODIFY_ALLOC) == 0)
-					channel = ompr.bcast_channel;
-			}
-		}
-
-	} else if (impr.n_plugs > 0) {
-		// establish or overlay half point-to-point on input
-		*oplug = -1;
-
-		// determine if input has plug available
-		if (*iplug < 0) {
-			for (*iplug = 0; *iplug < impr.n_plugs; (*iplug)++) {
-				if (iec61883_get_iPCRX (handle, input, &ipcr, *iplug) == 0) {
-					// get first online plug
-					if (iplug_online == -1 && ipcr.online)
-						iplug_online = *iplug;
-					if (ipcr.online && ipcr.n_p2p_connections == 0)
-						break;
-				}
-			}
-		} else if (iec61883_get_iPCRX (handle, input, &ipcr, *iplug) < 0)
-			FAIL ("Failed to get plug %d for input node", *iplug);
-
-		if (*iplug < impr.n_plugs) {
-			if (ipcr.bcast_connection == 1) {
-				channel = ipcr.channel;
-			} else {
-				// establish
-
-				// allocate bandwidth
-				// cannot accurately allocate bandwidth with no output plug
-				// use an output plug on the input device as a best guess
-				if (!skip_bandwidth) {
-					*bandwidth = iec61883_cmp_calc_bandwidth (handle, input, *iplug, -1);
-					if (*bandwidth < 1) {
-						WARN ("Failed to calculate bandwidth.");
-						failure = 1;
-					} else if (raw1394_bandwidth_modify (handle, *bandwidth, RAW1394_MODIFY_ALLOC) < 0) {
-						WARN ("Failed to allocate bandwidth.");
-						failure = 1;
-					}
-				}
-				if (!failure) {
-					raw1394_channel_modify (handle, channel, RAW1394_MODIFY_ALLOC);
-					if (iec61883_cmp_create_p2p_input (handle, input, *iplug, channel) == 0) {
-						WARN ("Established connection on channel %d.\n"
-						      "You may need to manually set the channel on the transmitting node.",
-						      channel);
-					} else {
-						// release channel and bandwidth
-						failure = raw1394_channel_modify (handle, channel, RAW1394_MODIFY_FREE);
-						if (!failure)
-							raw1394_bandwidth_modify (handle, *bandwidth, RAW1394_MODIFY_FREE);
-						channel = -1;
-					}
-				}
-			}
-
-		} else if (iplug_online > -1) {
-			// overlay
-			// get channel from input
-			*iplug = iplug_online;
-			if (iec61883_get_iPCRX (handle, input, &ipcr, iplug_online) == 0) {
-				channel = ipcr.channel;
-				if (ipcr.bcast_connection != 1)
-					if (iec61883_cmp_overlay_p2p_input (handle, input, iplug_online) < 0)
-						channel = -1;
-			}
-			WARN ("Overlayed connection on channel %d.\n"
-			      "You may need to manually set the channel on the transmitting node.",
-			      channel);
-		} else {
-			WARN ("Receiving node has no plugs online!");
-			// failover to broadcast
-			// allocate bandwidth based upon first input plug
-			*iplug = -1;
-			if (!skip_bandwidth) {
-				*bandwidth = iec61883_cmp_calc_bandwidth (handle, input, 0, impr.data_rate);
-				if (*bandwidth < 1) {
-					WARN ("Failed to calculate bandwidth.");
-					failure = 1;
-				} else if (raw1394_bandwidth_modify (handle, *bandwidth, RAW1394_MODIFY_ALLOC) < 0) {
-					WARN ("Failed to allocate bandwidth.");
-					failure = 1;
-				}
-			}
-			if (!failure) {
-				if (raw1394_channel_modify (handle, 63, RAW1394_MODIFY_ALLOC) == 0)
-					channel = 63;
-			}
-		}
-
-	} else {
-		// no input or output plugs - failover broadcast on channel 63
-		// not enough information to calculate bandwidth
-		*oplug = *iplug = -1;
-		if (raw1394_channel_modify (handle, 63, RAW1394_MODIFY_ALLOC) == 0)
-			channel = 63;
-		if (channel == 63)
-			WARN ("No plugs exist on either node; using default broadcast channel 63.");
-	}
-
-	return channel;
+int
+iec61883_cmp_connect (raw1394handle_t handle, nodeid_t output, int *oplug, 
+		nodeid_t input, int *iplug, int *bandwidth)
+{
+	/* Passing "-1" as the channel means it is a new connection. */
+	return cmp_connect (handle, output, oplug, input, iplug, bandwidth, -1);
 }
 
 int

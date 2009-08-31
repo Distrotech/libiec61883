@@ -17,6 +17,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "../src/iec61883.h"
 #include <stdio.h>
 #include <sys/select.h>
@@ -146,7 +150,7 @@ int main (int argc, char *argv[])
 			is_transmit = 0;
 			node_specified = 1;
 		} else if (strncmp (argv[i], "-p", 2) == 0) {
-			pid |= atoi (argv[++i]);
+			pid = atoi (argv[++i]);
 			is_transmit = 1;
 		} else if (strcmp (argv[i], "-") != 0) {
 			if (node_specified && !is_transmit)

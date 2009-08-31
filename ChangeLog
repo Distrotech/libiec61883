@@ -1,4 +1,69 @@
 ------------------------------------------------------------------------
+r83 | ddennedy | 2009-01-04 15:11:00 -0800 (Sun, 04 Jan 2009) | 1 line
+
+dv.c: remove a length check in dv_fb_recv that was already checked
+------------------------------------------------------------------------
+r82 | ddennedy | 2009-01-04 14:09:53 -0800 (Sun, 04 Jan 2009) | 1 line
+
+dv.c: add some validation to the dv_fb receive handler
+------------------------------------------------------------------------
+r81 | ddennedy | 2008-10-25 11:28:37 -0700 (Sat, 25 Oct 2008) | 1 line
+
+cmp.c: convert some confusing, chatty warnings into debug messages
+------------------------------------------------------------------------
+r80 | ddennedy | 2008-02-02 11:43:09 -0800 (Sat, 02 Feb 2008) | 1 line
+
+tsbuffer.c: fix return size of ts_get_pid() to prevent truncation of value (as reported by Kai Hoffmann)
+------------------------------------------------------------------------
+r79 | ddennedy | 2007-10-04 22:21:41 -0700 (Thu, 04 Oct 2007) | 1 line
+
+cmp.c: apply patch from Hugo Villeneuve to refactor iec61883_cmp_connect and _reconnect.
+------------------------------------------------------------------------
+r78 | ddennedy | 2007-06-27 22:42:05 -0700 (Wed, 27 Jun 2007) | 1 line
+
+dv.c: bugfix start iso transmission when initialization fails in iec61883_dv_xmit_start (spotted by Maksym Veremeyenko)
+------------------------------------------------------------------------
+r77 | ddennedy | 2007-05-14 21:37:39 -0700 (Mon, 14 May 2007) | 1 line
+
+convert c++ comments in amdtp.c to c-style
+------------------------------------------------------------------------
+r76 | ddennedy | 2007-05-14 21:33:18 -0700 (Mon, 14 May 2007) | 26 lines
+
+Apply patch from Manfred Weihs:
+1) I made IEC 60958 conformant PCM data more standard compliant. In
+particular, I correctly calculate parity and PAC code. This was the
+major fix that was necessary to make the Sony LISSA HiFi set output my
+streams.
+
+2) I fixed the buffer variable in the fill_packet function to unsigned
+char. The problem with (signed) char was that the compiler treats values
+greater than 127 as negative and when it implicitly converts them to
+(long) integers for the bit shifting operations, it sets all the more
+significant bits (e. g. 0xa3 is converted to 0xffffffa3), which
+obviously creates mess (i. e. noise in the speakers).
+
+3) In case packets get dropped (e. g. due to high load), the algorithm
+for generating SYT timestamps gets out of sync with the actual cycle
+count. I introduced a new function iec61883_cip_resync that (similar to
+iec61883_cip_init) resets some internal variables and synchronises the
+SYT timestamp generation with the cycle count. This function is called
+when dropped packets are detected. Unfortunately this turned out not to
+be sufficient because after dropped packets the reported cycle count is
+not correct. Therefore, I check whether the timestamps are in sync and
+resynchronise if necessary.
+
+4) I fixed some compiler warnings (mostly signedness issues) and removed
+an unused field of a struct.
+
+------------------------------------------------------------------------
+r75 | ddennedy | 2007-03-19 19:17:52 -0700 (Mon, 19 Mar 2007) | 1 line
+
+large file support for examples
+------------------------------------------------------------------------
+r74 | ddennedy | 2007-03-19 18:02:34 -0700 (Mon, 19 Mar 2007) | 1 line
+
+Apply patch from Robert Hailey to bugfix PID automatic selection possible on TSP with no PCR. Fix PCR PID filter option on test-mpeg2 utility.
+------------------------------------------------------------------------
 r73 | ddennedy | 2006-09-24 11:18:49 -0700 (Sun, 24 Sep 2006) | 1 line
 
 make manpages a part of dist tarball

@@ -2,6 +2,17 @@ libiec61883 RELEASE NOTES
 Copyright (C) 2004-2005 Kristian Hogsberg, Dan Dennedy, and Dan Maas.
 http://www.linux1394.org/
 
+Version 1.2.0
+	- Fixed PID handling in MPEG2-TS.
+	- Added iec61883_cip_resync().
+	- Silence some warnings in CMP that may needlessly alarm users.
+	- Improved validation of DV packets in dv_fb.
+	- bugfixes
+
+Version 1.1.0
+	- Added man pages for installed utilities.
+	- bugfixes
+
 Version 1.0.0
 
 	First release. This release is mostly feature complete as opposed to

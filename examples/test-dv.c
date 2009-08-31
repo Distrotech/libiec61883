@@ -17,6 +17,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "../src/iec61883.h"
 #include <stdio.h>
 #include <sys/poll.h>
@@ -170,6 +174,7 @@ int main (int argc, char *argv[])
 					raw1394_get_local_id (handle), &oplug, node, &iplug,
 					&bandwidth);
 				if (channel > -1) {
+					fprintf (stderr, "Connect succeeded, transmitting on channel %d.\n", channel);
 					dv_transmit (handle, f, channel);
 					iec61883_cmp_disconnect (handle,
 						raw1394_get_local_id (handle), oplug, node, iplug,

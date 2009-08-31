@@ -300,7 +300,7 @@ int main(int argc, const char** argv)
 							result = iec61883_get_oPCRX (handle, node, &o_pcr, idx);
 							if (result < 0)
 								continue;
-							is_got_opcr[idx];
+							is_got_opcr[idx] = 1;
 						}
 						is_set_opcr[idx] = 1;
 						if (strcasecmp (attribute, "online") == 0) {
@@ -330,7 +330,7 @@ int main(int argc, const char** argv)
 							result = iec61883_get_iPCRX (handle, node, &i_pcr, idx);
 							if (result < 0)
 								continue;
-							is_got_ipcr[idx];
+							is_got_ipcr[idx] = 1;
 						}
 						is_set_ipcr[idx] = 1;
 						if (strcasecmp (attribute, "online") == 0) {

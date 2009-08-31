@@ -17,6 +17,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "../src/iec61883.h"
 #include <stdio.h>
 #include <sys/select.h>
@@ -31,19 +35,19 @@ static void sighandler (int sig)
 	g_done = 1;
 }
 
-int fill_packet (iec61883_amdtp_t amdtp, char *data, int nevents,
+int fill_packet (iec61883_amdtp_t amdtp, unsigned char *data, int nevents,
 	unsigned int dbc, unsigned int dropped, void *callback_data)
 {
 	FILE *fp = (FILE *) callback_data;
 	static int total_packets = 0;
 	int nsamples = nevents * 2; // stereo 16bit PCM
-	char buffer [nsamples * 2];
+	unsigned char buffer [nsamples * 2];
 	
 	if (fread (buffer, 2, nsamples, fp) != nsamples) {
 		return -1;
 	} else {
 		// TODO: convert from additional formats (20 or 24-bits).
-		char *p = buffer;
+		unsigned char *p = buffer;
 		quadlet_t *event = (quadlet_t*) data;
 		int i;
 
@@ -63,7 +67,7 @@ int fill_packet (iec61883_amdtp_t amdtp, char *data, int nevents,
 	return 0;
 }
 
-static int read_packet (iec61883_amdtp_t amdtp, char *data, int nsamples,
+static int read_packet (iec61883_amdtp_t amdtp, unsigned char *data, int nsamples,
 	unsigned int dbc, unsigned int dropped, void *callback_data)
 {
 	FILE *f = (FILE*) callback_data;

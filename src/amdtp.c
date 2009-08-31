@@ -33,7 +33,7 @@
 #include "iec61883.h"
 #include "iec61883-private.h"
 
-#define AMDTP_MAX_PACKET_SIZE 2048	//XXX: what is max packet size in AMDTP?
+#define AMDTP_MAX_PACKET_SIZE 2048
 
 iec61883_amdtp_t
 iec61883_amdtp_xmit_init (raw1394handle_t handle,
@@ -115,6 +115,9 @@ iec61883_amdtp_xmit_init (raw1394handle_t handle,
 		amdtp->dimension = dimension;
 	}
 
+	/* reset framecounter for IEC958 mode */
+	amdtp->iec958_frame_count = 0;
+
 	amdtp->sample_format = sample_format;
 	amdtp->get_data = get_data;
 	amdtp->callback_data = callback_data;
@@ -143,13 +146,40 @@ amdtp_xmit_handler (raw1394handle_t handle,
 {
 	struct iec61883_amdtp *amdtp = raw1394_get_userdata (handle);
 	struct iec61883_packet *packet = (struct iec61883_packet *) data;
-	int nevents = iec61883_cip_fill_header (handle, &amdtp->cip, packet);
+	int nevents;
 	quadlet_t *event = (quadlet_t *) packet->data;
 	enum raw1394_iso_disposition result = RAW1394_ISO_OK;
 	int nsamples;
+	int diff_sync;
 	
 	assert (amdtp != NULL);
 	amdtp->total_dropped += dropped;
+
+	/* If packets got dropped, we have to resynchronize the generation
+	   of SYT timestamps. Otherwise the SYT timestamps would differ
+	   too much from current cycle time.
+	   Unfortunately, dropped does not tell us how many packets got
+	   got dropped. It just tells us that we lost packets.
+	   So the only thing we can do is restarting buffering and
+	   taking the current cycle count as reference. */
+	if (dropped) {
+		DEBUG ("dropped packets detected.");
+		iec61883_cip_resync(&amdtp->cip, cycle);
+	}
+
+	/* The following is a workaround for a possible bug in the kernel
+           module. It seems that after a dropped packet event, the cycle
+           number passed to this handler is incorrect (does not match the
+           transmission cycle) for some time. Therefore, we check whether
+	   the SYT timestamp is in sync with the current cycle count. If
+	   we ran out of sync, we resynchronize. */
+	diff_sync = (amdtp->cip.cycle_count - cycle + 8000) % 8000;
+	if (diff_sync > 5) {
+		DEBUG ("lost SYT sync, resynchronizing.");
+		iec61883_cip_resync(&amdtp->cip, cycle);
+	}
+
+	nevents = iec61883_cip_fill_header (handle, &amdtp->cip, packet);
 
 	if (nevents > 0) {
 		nsamples = nevents;
@@ -213,7 +243,14 @@ amdtp_xmit_handler (raw1394handle_t handle,
 					sample->validity = IEC60958_DATA_VALID;
 					if( i % 2 == 0 || amdtp->dimension == 1 ) {
 						/* even --> CHANNEL 1 */
-						sample->pac = IEC60958_PAC_M;
+						if( amdtp->iec958_frame_count == 0 )
+						{
+							sample->pac = IEC60958_PAC_B;
+						}
+						else
+						{	
+							sample->pac = IEC60958_PAC_M;
+						}
 					}
 					else {
 						/* Odd --> CHANNEL 2 */
@@ -221,8 +258,27 @@ amdtp_xmit_handler (raw1394handle_t handle,
 					}
 				}
 
-				/* The parity bit should be computed here... */
+				sample->ch_status = 0;
+				/* The parity bit is the xor of the sample bits and the channel 
+				   status info bit. */
+				int shift;
+				u_int32_t p;
+				for (shift = 16, p = sample->data ^ sample->ch_status; shift > 0; shift >>= 1)
+				{
+					p ^= (p >> shift);
+				}
+				sample->parity = p & 1;
+
 				event[i] = htonl (event[i]);
+				
+				/* increase the IEC958 framecounter */
+				if ((i % 2 == 1) || (amdtp->dimension == 1))
+				{
+					amdtp->iec958_frame_count++;
+					if (amdtp->iec958_frame_count >= 192) {
+						amdtp->iec958_frame_count = 0;
+					}
+				}
 			}
 		}
 		else {

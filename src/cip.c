@@ -89,7 +89,6 @@ iec61883_cip_init(struct iec61883_cip *ptz, int format, int fdf,
 
   ptz->rate = rate;
   ptz->cycle_count = transfer_delay / 3072;
-  ptz->cycle_count2 = 0;
   ptz->format = format;
   ptz->fdf = fdf;
   ptz->mode = IEC61883_MODE_BLOCKING_EMPTY;
@@ -109,6 +108,19 @@ iec61883_cip_init(struct iec61883_cip *ptz, int format, int fdf,
 		24576000 * ptz->syt_interval, ptz->rate);
   fraction_init(&ptz->cycle_offset,
 		(transfer_delay % 3072) * ptz->rate, ptz->rate);
+}
+
+void
+iec61883_cip_resync(struct iec61883_cip *ptz, int cycle)
+{
+  const int transfer_delay = 9000;
+
+  ptz->cycle_count = cycle + (transfer_delay / 3072);
+  fraction_init(&ptz->cycle_offset,
+		(transfer_delay % 3072) * ptz->rate, ptz->rate);
+
+  fraction_init(&ptz->ready_samples, 0, 8000);
+  ptz->dbc = 0;
 }
 
 void 
@@ -170,10 +182,10 @@ iec61883_cip_fill_header(raw1394handle_t handle, struct iec61883_cip *ptz,
     fraction_add(&ptz->cycle_offset, &ptz->cycle_offset,
 		 &ptz->ticks_per_syt_offset);
 
-    /* This next addition should be modulo 8000 (0x1f40),
-     * but we only use the lower 4 bits of cycle_count, so
-     * we don't need the modulo. */
+    /* The cycle_count field is a 13 bits value that goes from 0 to 7999.
+     * The cycle_offset field is a 12 bits value that goes from 0 to 3071. */
     ptz->cycle_count += ptz->cycle_offset.integer / 3072;
+    ptz->cycle_count %= 8000;
     ptz->cycle_offset.integer %= 3072;
   }
   else
