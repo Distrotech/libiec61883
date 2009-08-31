@@ -1,0 +1,4412 @@
+<!--
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN">
+-->
+<book>
+  <bookinfo>
+
+    <title>libiec61883</title>
+    <subtitle>version 2.0.4</subtitle>
+
+    <copyright>
+      <year>2004-2009</year>
+      <holder>Kristian Hogsberg, Dan Maas, and Dan Dennedy</holder>
+    </copyright>
+
+  </bookinfo>
+  <chapter id="functions">
+    <title>Function Reference</title>
+
+<refentry id="API-int">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>int</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>int</refname>
+ <refpurpose>
+  AMDTP receive callback function prototype
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>typedef <function>int </function></funcdef>
+   <paramdef> * <parameter>iec61883_amdtp_recv_t</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>iec61883_amdtp_recv_t</parameter></term>
+   <listitem>
+    <para>
+     -- undescribed --
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   The buffer contains consumer-ready 16bit raw PCM if it is in that format.
+   Otherwise, the data consists of quadlets containing only one sample with 
+   any necessary padding minus the label if pcm, otherwise, for IEC958
+   audio data, the header remains intact.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   0 for success or -1 for failure
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-xmit-init">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_xmit_init</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_xmit_init</refname>
+ <refpurpose>
+     setup transmission of AMDTP
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>iec61883_amdtp_t <function>iec61883_amdtp_xmit_init </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>int <parameter>rate</parameter></paramdef>
+   <paramdef>int <parameter>format</parameter></paramdef>
+   <paramdef>int <parameter>sample_format</parameter></paramdef>
+   <paramdef>int <parameter>mode</parameter></paramdef>
+   <paramdef>int <parameter>dimension</parameter></paramdef>
+   <paramdef>iec61883_amdtp_xmit_t <parameter>get_data</parameter></paramdef>
+   <paramdef>void * <parameter>callback_data</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     the libraw1394 handle to use for all operations
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>rate</parameter></term>
+   <listitem>
+    <para>
+     one of enum iec61883_datarate
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>format</parameter></term>
+   <listitem>
+    <para>
+     one of enum iec61883_amdtp_format to describe audio data format
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>sample_format</parameter></term>
+   <listitem>
+    <para>
+     one of enum iec61883_amdtp_sample_format
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>mode</parameter></term>
+   <listitem>
+    <para>
+     one of iec61883_cip_mode
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>dimension</parameter></term>
+   <listitem>
+    <para>
+     the number of audio channels
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>get_data</parameter></term>
+   <listitem>
+    <para>
+     a function pointer to your callback routine
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>callback_data</parameter></term>
+   <listitem>
+    <para>
+     an opaque pointer to provide to your callback function
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   AMDTP =  Audio and Music Data Transport Protocol
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   </para><para>
+
+   A pointer to an iec61883_amdtp object upon success or NULL on failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-recv-init">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_recv_init</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_recv_init</refname>
+ <refpurpose>
+     setup reception of AMDTP
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>iec61883_amdtp_t <function>iec61883_amdtp_recv_init </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>iec61883_amdtp_recv_t <parameter>put_data</parameter></paramdef>
+   <paramdef>void * <parameter>callback_data</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     the libraw1394 handle to use for all operations
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>put_data</parameter></term>
+   <listitem>
+    <para>
+     a function pointer to your callback routine
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>callback_data</parameter></term>
+   <listitem>
+    <para>
+     an opaque pointer to provide to your callback function
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   </para><para>
+
+   A pointer to an iec61883_amdtp object upon success or NULL on failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-xmit-start">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_xmit_start</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_xmit_start</refname>
+ <refpurpose>
+     start transmission of AMDTP
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_amdtp_xmit_start </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+   <paramdef>int <parameter>channel</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>channel</parameter></term>
+   <listitem>
+    <para>
+     the isochronous channel number to use
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-xmit-stop">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_xmit_stop</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_xmit_stop</refname>
+ <refpurpose>
+     stop transmission of AMDTP
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_amdtp_xmit_stop </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-recv-start">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_recv_start</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_recv_start</refname>
+ <refpurpose>
+     start reception of AMDTP
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_amdtp_recv_start </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+   <paramdef>int <parameter>channel</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>channel</parameter></term>
+   <listitem>
+    <para>
+     the isochronous channel number to use
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-recv-stop">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_recv_stop</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_recv_stop</refname>
+ <refpurpose>
+     stop reception of AMDTP
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_amdtp_recv_stop </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-close">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_close</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_close</refname>
+ <refpurpose>
+     destroy an amdtp object
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_amdtp_close </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-buffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_buffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_buffers</refname>
+ <refpurpose>
+     get the size of the buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_amdtp_get_buffers </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-set-buffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_set_buffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_set_buffers</refname>
+ <refpurpose>
+     set the size of the buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_amdtp_set_buffers </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+   <paramdef>unsigned int <parameter>packets</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>packets</parameter></term>
+   <listitem>
+    <para>
+     the size of the buffer in packets
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is an advanced option that can only be set after initialization and 
+   before reception or transmission.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-prebuffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_prebuffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_prebuffers</refname>
+ <refpurpose>
+     get the size of the pre-transmission buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_amdtp_get_prebuffers </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-set-prebuffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_set_prebuffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_set_prebuffers</refname>
+ <refpurpose>
+     set the size of the pre-transmission buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_amdtp_set_prebuffers </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+   <paramdef>unsigned int <parameter>packets</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>packets</parameter></term>
+   <listitem>
+    <para>
+     the size of the buffer in packets
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is an advanced option that can only be set after initialization and 
+   before reception or transmission.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-irq-interval">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_irq_interval</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_irq_interval</refname>
+ <refpurpose>
+     get the interrupt rate
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_amdtp_get_irq_interval </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-set-irq-interval">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_set_irq_interval</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_set_irq_interval</refname>
+ <refpurpose>
+     set the interrupt rate
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_amdtp_set_irq_interval </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+   <paramdef>unsigned int <parameter>packets</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>packets</parameter></term>
+   <listitem>
+    <para>
+     the size of the interval in packets
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is an advanced option that can only be set after initialization and 
+   before reception or transmission.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-synch">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_synch</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_synch</refname>
+ <refpurpose>
+     get behavior on close
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_amdtp_get_synch </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   If synch is not zero, then when stopping reception all packets in
+   raw1394 buffers are flushed and invoking your callback function and when
+   stopping transmission all packets in the raw1394 buffers are sent before
+   the close function returns.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-set-synch">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_set_synch</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_set_synch</refname>
+ <refpurpose>
+     set behavior on close
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_amdtp_set_synch </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+   <paramdef>int <parameter>synch</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>synch</parameter></term>
+   <listitem>
+    <para>
+     1 if you want sync behaviour, 0 otherwise
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   If synch is not zero, then when stopping reception all packets in
+   raw1394 buffers are flushed and invoking your callback function and when
+   stopping transmission all packets in the raw1394 buffers are sent before
+   the close function returns.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-speed">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_speed</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_speed</refname>
+ <refpurpose>
+     get data rate for transmission
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_amdtp_get_speed </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   one of enum raw1394_iso_speed (S100, S200, or S400)
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-set-speed">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_set_speed</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_set_speed</refname>
+ <refpurpose>
+     set data rate for transmission
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_amdtp_set_speed </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+   <paramdef>int <parameter>speed</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>speed</parameter></term>
+   <listitem>
+    <para>
+     one of enum raw1394_iso_speed (S100, S200, or S400)
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-dropped">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_dropped</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_dropped</refname>
+ <refpurpose>
+     get the total number of dropped packets
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_amdtp_get_dropped </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   The total number of dropped packets since starting transmission or reception.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-callback-data">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_callback_data</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_callback_data</refname>
+ <refpurpose>
+     get the callback data you supplied
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void * <function>iec61883_amdtp_get_callback_data </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This function is useful in bus reset callback routines because only
+   the libraw1394 handle is available, and libiec61883 uses the userdata
+   field of the libraw1394 handle.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   An opaque pointer to whatever you supplied when you called init.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-dimension">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_dimension</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_dimension</refname>
+ <refpurpose>
+     get the AMDTP dimension
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_amdtp_get_dimension </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This function is useful in your callbacks.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   The numeric value of the current dimension.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-rate">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_rate</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_rate</refname>
+ <refpurpose>
+     get the AMDTP sampling frequency
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_amdtp_get_rate </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This function is useful in your callbacks.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   The numeric value of the sampling frequency.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-format">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_format</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_format</refname>
+ <refpurpose>
+     get the AMDTP data format
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>enum iec61883_amdtp_format <function>iec61883_amdtp_get_format </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This function is useful in your callbacks.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   One of enum iec61883_amdtp_format.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-amdtp-get-sample-format">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_amdtp_get_sample_format</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_amdtp_get_sample_format</refname>
+ <refpurpose>
+     get the AMDTP sample format
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>enum iec61883_amdtp_sample_format <function>iec61883_amdtp_get_sample_format </function></funcdef>
+   <paramdef>iec61883_amdtp_t <parameter>amdtp</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>amdtp</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_amdtp object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This function is useful in your callbacks.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   One of enum iec61883_amdtp_sample_format.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-recv-init">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_recv_init</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_recv_init</refname>
+ <refpurpose>
+     setup reception of a DV stream
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>iec61883_dv_t <function>iec61883_dv_recv_init </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>iec61883_dv_recv_t <parameter>put_data</parameter></paramdef>
+   <paramdef>void * <parameter>callback_data</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     the libraw1394 handle to use for all operations
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>put_data</parameter></term>
+   <listitem>
+    <para>
+     a function pointer to your reception callback routine
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>callback_data</parameter></term>
+   <listitem>
+    <para>
+     an opaque data pointer to provide to your callback function
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   A pointer to an iec61883_dv object upon success or NULL on failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-xmit-init">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_xmit_init</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_xmit_init</refname>
+ <refpurpose>
+     setup transmission of a DV stream
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>iec61883_dv_t <function>iec61883_dv_xmit_init </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>int <parameter>is_pal</parameter></paramdef>
+   <paramdef>iec61883_dv_xmit_t <parameter>get_data</parameter></paramdef>
+   <paramdef>void * <parameter>callback_data</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     the libraw1394 handle to use for all operations
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>is_pal</parameter></term>
+   <listitem>
+    <para>
+     set to non-zero if transmitting a PAL stream (applies to transmission only)
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>get_data</parameter></term>
+   <listitem>
+    <para>
+     a function pointer to your transmission callback routine
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>callback_data</parameter></term>
+   <listitem>
+    <para>
+     an opaque data pointer to provide to your callback function
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   A pointer to an iec61883_dv object upon success or NULL on failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-recv-start">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_recv_start</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_recv_start</refname>
+ <refpurpose>
+     start receiving a DV stream
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_dv_recv_start </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+   <paramdef>int <parameter>channel</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>channel</parameter></term>
+   <listitem>
+    <para>
+     the isochronous channel number
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   0 for success or -1 for failure
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-xmit-start">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_xmit_start</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_xmit_start</refname>
+ <refpurpose>
+     start transmitting a DV stream
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_dv_xmit_start </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+   <paramdef>int <parameter>channel</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>channel</parameter></term>
+   <listitem>
+    <para>
+     the isochronous channel number
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   0 for success or -1 for failure
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-recv-stop">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_recv_stop</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_recv_stop</refname>
+ <refpurpose>
+     stop reception of a DV stream
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_recv_stop </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv ojbect
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-xmit-stop">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_xmit_stop</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_xmit_stop</refname>
+ <refpurpose>
+     stop transmission of a DV stream
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_xmit_stop </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-close">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_close</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_close</refname>
+ <refpurpose>
+     stop reception or transmission and destroy iec61883_dv object
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_close </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-get-buffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_get_buffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_get_buffers</refname>
+ <refpurpose>
+     get the size of the buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_dv_get_buffers </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-set-buffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_set_buffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_set_buffers</refname>
+ <refpurpose>
+     set the size of the buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_set_buffers </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+   <paramdef>unsigned int <parameter>packets</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>packets</parameter></term>
+   <listitem>
+    <para>
+     the size of the buffer in packets
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is an advanced option that can only be set after initialization and 
+   before reception or transmission.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-get-prebuffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_get_prebuffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_get_prebuffers</refname>
+ <refpurpose>
+     get the size of the pre-transmission buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_dv_get_prebuffers </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-set-prebuffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_set_prebuffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_set_prebuffers</refname>
+ <refpurpose>
+     set the size of the pre-transmission buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_set_prebuffers </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+   <paramdef>unsigned int <parameter>packets</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>packets</parameter></term>
+   <listitem>
+    <para>
+     the size of the buffer in packets
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is an advanced option that can only be set after initialization and 
+   before reception or transmission.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-get-irq-interval">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_get_irq_interval</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_get_irq_interval</refname>
+ <refpurpose>
+     get the interrupt rate
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_dv_get_irq_interval </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-set-irq-interval">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_set_irq_interval</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_set_irq_interval</refname>
+ <refpurpose>
+     set the interrupt rate
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_set_irq_interval </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+   <paramdef>unsigned int <parameter>packets</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>packets</parameter></term>
+   <listitem>
+    <para>
+     the size of the interval in packets
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is an advanced option that can only be set after initialization and 
+   before reception or transmission.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-get-synch">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_get_synch</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_get_synch</refname>
+ <refpurpose>
+     get behavior on close
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_dv_get_synch </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   If synch is not zero, then when stopping reception all packets in
+   raw1394 buffers are flushed and invoking your callback function and when
+   stopping transmission all packets in the raw1394 buffers are sent before
+   the close function returns.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-set-synch">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_set_synch</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_set_synch</refname>
+ <refpurpose>
+     set behavior on close
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_set_synch </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+   <paramdef>int <parameter>synch</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>synch</parameter></term>
+   <listitem>
+    <para>
+     1 if you want sync behaviour, 0 otherwise
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   If synch is not zero, then when stopping reception all packets in
+   raw1394 buffers are flushed and invoking your callback function and when
+   stopping transmission all packets in the raw1394 buffers are sent before
+   the close function returns.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-get-speed">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_get_speed</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_get_speed</refname>
+ <refpurpose>
+     get data rate for transmission
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_dv_get_speed </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   one of enum raw1394_iso_speed (S100, S200, or S400)
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-set-speed">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_set_speed</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_set_speed</refname>
+ <refpurpose>
+     set data rate for transmission
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_set_speed </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+   <paramdef>int <parameter>speed</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>speed</parameter></term>
+   <listitem>
+    <para>
+     one of enum raw1394_iso_speed (S100, S200, or S400)
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-get-dropped">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_get_dropped</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_get_dropped</refname>
+ <refpurpose>
+     get the total number of dropped packets
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_dv_get_dropped </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   The total number of dropped packets since starting transmission or reception.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-get-callback-data">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_get_callback_data</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_get_callback_data</refname>
+ <refpurpose>
+     get the callback data you supplied
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void * <function>iec61883_dv_get_callback_data </function></funcdef>
+   <paramdef>iec61883_dv_t <parameter>dv</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dv</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This function is useful in bus reset callback routines because only
+   the libraw1394 handle is available, and libiec61883 uses the userdata
+   field of the libraw1394 handle.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   An opaque pointer to whatever you supplied when you called init.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-fb-init">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_fb_init</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_fb_init</refname>
+ <refpurpose>
+     setup reception of DV frames
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>iec61883_dv_fb_t <function>iec61883_dv_fb_init </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>iec61883_dv_fb_recv_t <parameter>put_data</parameter></paramdef>
+   <paramdef>void * <parameter>callback_data</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     raw1394 handle.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>put_data</parameter></term>
+   <listitem>
+    <para>
+     your callback function.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>callback_data</parameter></term>
+   <listitem>
+    <para>
+     an opaque pointer you can send to your callback.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This provides a frame-oriented instead of stream-oriented interface as
+   compared to <function>iec61883_dv_init</function>. This means that starts at the beginning of a
+   frame, and all data is frame-aligned. Your callback function
+   will receive a complete DV frame even if packets are dropped.
+   The callback parameter <parameter>complete</parameter> indicates if a full frame is received.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   A pointer to an iec61883_dv_fb object upon success or NULL on failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-fb-get-dv">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_fb_get_dv</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_fb_get_dv</refname>
+ <refpurpose>
+     get the parent iec61883_dv object
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>iec61883_dv_t <function>iec61883_dv_fb_get_dv </function></funcdef>
+   <paramdef>iec61883_dv_fb_t <parameter>dvfb</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dvfb</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv_fb object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   A pointer to an iec61883_dv object upon success or NULL on failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-fb-start">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_fb_start</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_fb_start</refname>
+ <refpurpose>
+     start receiving DV frames
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_dv_fb_start </function></funcdef>
+   <paramdef>iec61883_dv_fb_t <parameter>dvfb</parameter></paramdef>
+   <paramdef>int <parameter>channel</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dvfb</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv_fb object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>channel</parameter></term>
+   <listitem>
+    <para>
+     the isochronous channel number
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   0 for success or -1 for failure
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-fb-stop">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_fb_stop</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_fb_stop</refname>
+ <refpurpose>
+     stop receiving DV frames
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_fb_stop </function></funcdef>
+   <paramdef>iec61883_dv_fb_t <parameter>dvfb</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dvfb</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv_fb object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-fb-close">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_fb_close</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_fb_close</refname>
+ <refpurpose>
+     stop receiving DV frames and destroy iec61883_dv_fb object
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_dv_fb_close </function></funcdef>
+   <paramdef>iec61883_dv_fb_t <parameter>dvfb</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dvfb</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv_fb object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-fb-get-incomplete">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_fb_get_incomplete</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_fb_get_incomplete</refname>
+ <refpurpose>
+     get the total number of incomplete frames
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_dv_fb_get_incomplete </function></funcdef>
+   <paramdef>iec61883_dv_fb_t <parameter>dvfb</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dvfb</parameter></term>
+   <listitem>
+    <para>
+     point to the iec61883_dv_fb object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   The total number of incomplete frames due to dropped packets since starting
+   reception.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-dv-fb-get-callback-data">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_dv_fb_get_callback_data</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_dv_fb_get_callback_data</refname>
+ <refpurpose>
+     get the callback data you supplied
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void * <function>iec61883_dv_fb_get_callback_data </function></funcdef>
+   <paramdef>iec61883_dv_fb_t <parameter>dvfb</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dvfb</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_dv_fb object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This function is useful in bus reset callback routines because only
+   the libraw1394 handle is available, and libiec61883 uses the userdata
+   field of the libraw1394 handle.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   An opaque pointer to whatever you supplied when you called init.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-recv-init">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_recv_init</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_recv_init</refname>
+ <refpurpose>
+     setup reception of MPEG2-TS
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>iec61883_mpeg2_t <function>iec61883_mpeg2_recv_init </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>iec61883_mpeg2_recv_t <parameter>put_data</parameter></paramdef>
+   <paramdef>void * <parameter>callback_data</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     the libraw1394 handle to use for all operations
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>put_data</parameter></term>
+   <listitem>
+    <para>
+     a function pointer to your callback routine
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>callback_data</parameter></term>
+   <listitem>
+    <para>
+     an opaque pointer to provide to your callback function
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   A pointer to an iec61883_mpeg2 object upon success or NULL for failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-xmit-init">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_xmit_init</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_xmit_init</refname>
+ <refpurpose>
+     setup transmission of MPEG2-TS
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>iec61883_mpeg2_t <function>iec61883_mpeg2_xmit_init </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>iec61883_mpeg2_xmit_t <parameter>get_data</parameter></paramdef>
+   <paramdef>void * <parameter>callback_data</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     the libraw1394 handle to use for all operations
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>get_data</parameter></term>
+   <listitem>
+    <para>
+     a function pointer to your callback routine
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>callback_data</parameter></term>
+   <listitem>
+    <para>
+     an opaque pointer to provide to your callback function
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   A pointer to an iec61883_mpeg2 object upon success or NULL for failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-recv-start">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_recv_start</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_recv_start</refname>
+ <refpurpose>
+     start receiving MPEG2-TS
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_mpeg2_recv_start </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+   <paramdef>int <parameter>channel</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>channel</parameter></term>
+   <listitem>
+    <para>
+     isochronous channel number
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   0 for success or -1 for failure
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-xmit-start">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_xmit_start</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_xmit_start</refname>
+ <refpurpose>
+     start transmitting MPEG2-TS
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_mpeg2_xmit_start </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+   <paramdef>int <parameter>pid</parameter></paramdef>
+   <paramdef>int <parameter>channel</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>pid</parameter></term>
+   <listitem>
+    <para>
+     the program ID of the transport stream to select
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>channel</parameter></term>
+   <listitem>
+    <para>
+     isochronous channel number
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   0 for success or -1 for failure
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-recv-stop">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_recv_stop</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_recv_stop</refname>
+ <refpurpose>
+     stop receiving MPEG2-TS
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_mpeg2_recv_stop </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to the iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-xmit-stop">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_xmit_stop</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_xmit_stop</refname>
+ <refpurpose>
+     stop transmitting MPEG2-TS
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_mpeg2_xmit_stop </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to the iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-close">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_close</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_close</refname>
+ <refpurpose>
+     stop receiving or transmitting and destroy iec61883_mpeg2 object
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_mpeg2_close </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-get-buffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_get_buffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_get_buffers</refname>
+ <refpurpose>
+     get the size of the raw1394 buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_mpeg2_get_buffers </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-set-buffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_set_buffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_set_buffers</refname>
+ <refpurpose>
+     set the size of the raw1394 buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_mpeg2_set_buffers </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+   <paramdef>unsigned int <parameter>packets</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>packets</parameter></term>
+   <listitem>
+    <para>
+     the size of the buffer in packets
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is an advanced option that can only be set after initialization and 
+   before reception or transmission.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-get-prebuffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_get_prebuffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_get_prebuffers</refname>
+ <refpurpose>
+     get the size of the pre-transmission buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_mpeg2_get_prebuffers </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-set-prebuffers">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_set_prebuffers</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_set_prebuffers</refname>
+ <refpurpose>
+     set the size of the pre-transmission buffer
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_mpeg2_set_prebuffers </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+   <paramdef>unsigned int <parameter>packets</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>packets</parameter></term>
+   <listitem>
+    <para>
+     the size of the buffer in packets
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is an advanced option that can only be set after initialization and 
+   before reception or transmission.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-get-irq-interval">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_get_irq_interval</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_get_irq_interval</refname>
+ <refpurpose>
+     get the interrupt rate
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_mpeg2_get_irq_interval </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-set-irq-interval">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_set_irq_interval</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_set_irq_interval</refname>
+ <refpurpose>
+     set the interrupt rate
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_mpeg2_set_irq_interval </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+   <paramdef>unsigned int <parameter>packets</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>packets</parameter></term>
+   <listitem>
+    <para>
+     the size of the interval in packets
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is an advanced option that can only be set after initialization and 
+   before reception or transmission.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-get-synch">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_get_synch</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_get_synch</refname>
+ <refpurpose>
+     get behavior on close
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_mpeg2_get_synch </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   If synch is not zero, then when stopping reception all packets in
+   raw1394 buffers are flushed and invoking your callback function and when
+   stopping transmission all packets in the raw1394 buffers are sent before
+   the close function returns.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-set-synch">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_set_synch</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_set_synch</refname>
+ <refpurpose>
+     set behavior on close
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_mpeg2_set_synch </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+   <paramdef>int <parameter>synch</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>synch</parameter></term>
+   <listitem>
+    <para>
+     1 if you want sync behaviour, 0 otherwise
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   If synch is not zero, then when stopping reception all packets in
+   raw1394 buffers are flushed and invoking your callback function and when
+   stopping transmission all packets in the raw1394 buffers are sent before
+   the close function returns.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-get-speed">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_get_speed</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_get_speed</refname>
+ <refpurpose>
+     get data rate for transmission
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_mpeg2_get_speed </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   one of enum raw1394_iso_speed (S100, S200, or S400)
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-set-speed">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_set_speed</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_set_speed</refname>
+ <refpurpose>
+     set data rate for transmission
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_mpeg2_set_speed </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+   <paramdef>int <parameter>speed</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mepg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>speed</parameter></term>
+   <listitem>
+    <para>
+     one of enum raw1394_iso_speed (S100, S200, or S400)
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-get-dropped">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_get_dropped</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_get_dropped</refname>
+ <refpurpose>
+     get the total number of dropped packets
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>unsigned int <function>iec61883_mpeg2_get_dropped </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   The total number of dropped packets since starting transmission or reception.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-mpeg2-get-callback-data">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_mpeg2_get_callback_data</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_mpeg2_get_callback_data</refname>
+ <refpurpose>
+     get the callback data you supplied
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void * <function>iec61883_mpeg2_get_callback_data </function></funcdef>
+   <paramdef>iec61883_mpeg2_t <parameter>mpeg2</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>mpeg2</parameter></term>
+   <listitem>
+    <para>
+     pointer to iec61883_mpeg2 object
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This function is useful in bus reset callback routines because only
+   the libraw1394 handle is available, and libiec61883 uses the userdata
+   field of the libraw1394 handle.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   An opaque pointer to whatever you supplied when you called init.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-cmp-calc-bandwidth">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_cmp_calc_bandwidth</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_cmp_calc_bandwidth</refname>
+ <refpurpose>
+     calculate bandwidth allocation units
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_cmp_calc_bandwidth </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>nodeid_t <parameter>output</parameter></paramdef>
+   <paramdef>int <parameter>plug</parameter></paramdef>
+   <paramdef>int <parameter>speed</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     a libraw1394 handle
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>output</parameter></term>
+   <listitem>
+    <para>
+     the node id of the transmitter
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>plug</parameter></term>
+   <listitem>
+    <para>
+     the index of the output plug
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>speed</parameter></term>
+   <listitem>
+    <para>
+     if &gt;= 0 then override the data rate factor
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   Uses parameters of the output plug control register of the transmitter to
+   calculate what its bandwidth requirements are. Parameters inlude payload,
+   overhead_id, and data rate (optionally <parameter>speed</parameter>).
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   bandwidth allocation units or -1 on failure
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-cmp-connect">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_cmp_connect</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_cmp_connect</refname>
+ <refpurpose>
+     establish or overlay connection automatically
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_cmp_connect </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>nodeid_t <parameter>output</parameter></paramdef>
+   <paramdef>int * <parameter>oplug</parameter></paramdef>
+   <paramdef>nodeid_t <parameter>input</parameter></paramdef>
+   <paramdef>int * <parameter>iplug</parameter></paramdef>
+   <paramdef>int * <parameter>bandwidth</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     a libraw1394 handle
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>output</parameter></term>
+   <listitem>
+    <para>
+     node id of the transmitter
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>oplug</parameter></term>
+   <listitem>
+    <para>
+     the output plug to use. If -1, find the first online plug, and
+     upon return, contains the plug number used.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>input</parameter></term>
+   <listitem>
+    <para>
+     node id of the receiver
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>iplug</parameter></term>
+   <listitem>
+    <para>
+     the input plug to use. If -1, find the first online plug, and
+     upon return, contains the plug number used.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>bandwidth</parameter></term>
+   <listitem>
+    <para>
+     an input/output parameter. As an input this is a boolean that
+     indicates whether to perform bandwidth allocation. Supply 0 to skip bandwidth
+     allocation; any other value permits it. Upon return, actual bandwidth allocation
+     units allocated are returned, which you supply to the disconnect routine.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is a high level function that attempts to be as smart as possible, but
+   it gives point-to-point connections higher priority over broadcast connections.
+   It can automatically handle situations where either <parameter>input</parameter> and/or <parameter>output</parameter> does
+   not implement plug control registers. However, if one node implements plug
+   registers it assumes the other node has some sort of manual channel selection
+   (i.e., through software or a control panel).
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   It returns the isochronous channel number selected or -1 if the function has
+   failed for any reason.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-cmp-reconnect">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_cmp_reconnect</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_cmp_reconnect</refname>
+ <refpurpose>
+     reestablish or overlay connection after a bus reset
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_cmp_reconnect </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>nodeid_t <parameter>output</parameter></paramdef>
+   <paramdef>int * <parameter>oplug</parameter></paramdef>
+   <paramdef>nodeid_t <parameter>input</parameter></paramdef>
+   <paramdef>int * <parameter>iplug</parameter></paramdef>
+   <paramdef>int * <parameter>bandwidth</parameter></paramdef>
+   <paramdef>int <parameter>channel</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     a libraw1394 handle
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>output</parameter></term>
+   <listitem>
+    <para>
+     node id of the transmitter
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>oplug</parameter></term>
+   <listitem>
+    <para>
+     the output plug to use. If -1, find the first online plug, and
+     upon return, contains the plug number used.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>input</parameter></term>
+   <listitem>
+    <para>
+     node id of the receiver
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>iplug</parameter></term>
+   <listitem>
+    <para>
+     the input plug to use. If -1, find the first online plug, and
+     upon return, contains the plug number used.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>bandwidth</parameter></term>
+   <listitem>
+    <para>
+     an input/output parameter. As an input this is a boolean that
+     indicates whether to perform bandwidth allocation. Supply 0 to skip bandwidth
+     allocation; any other value permits it. Upon return, actual bandwidth allocation
+     units allocated are returned, which you supply to the disconnect routine.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>channel</parameter></term>
+   <listitem>
+    <para>
+     the channel number on which to reconnect, if possible
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This is a high level function that attempts to be as smart as possible, but
+   it gives point-to-point connections higher priority over broadcast connections.
+   It can automatically handle situations where either <parameter>input</parameter> and/or <parameter>output</parameter> does
+   not implement plug control registers. However, if one node implements plug
+   registers it assumes the other node has some sort of manual channel selection
+   (i.e., through software or a control panel).
+   </para><para>
+
+   This function is useful in bus reset situations where it would be nice to 
+   reconfigure the transmission or reception if the channel does not need to
+   change.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   It returns the isochronous channel number selected or -1 if the function has
+   failed for any reason.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-cmp-disconnect">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_cmp_disconnect</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_cmp_disconnect</refname>
+ <refpurpose>
+     break connection automatically
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_cmp_disconnect </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>nodeid_t <parameter>output</parameter></paramdef>
+   <paramdef>int <parameter>oplug</parameter></paramdef>
+   <paramdef>nodeid_t <parameter>input</parameter></paramdef>
+   <paramdef>int <parameter>iplug</parameter></paramdef>
+   <paramdef>unsigned int <parameter>channel</parameter></paramdef>
+   <paramdef>unsigned int <parameter>bandwidth</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     a libraw1394 handle
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>output</parameter></term>
+   <listitem>
+    <para>
+     node id of the transmitter
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>oplug</parameter></term>
+   <listitem>
+    <para>
+     the output plug to use, or -1 to find the first online plug.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>input</parameter></term>
+   <listitem>
+    <para>
+     node id of the receiver
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>iplug</parameter></term>
+   <listitem>
+    <para>
+     the input plug to use, or -1 to find the first online plug.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>channel</parameter></term>
+   <listitem>
+    <para>
+     the isochronous channel in use
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>bandwidth</parameter></term>
+   <listitem>
+    <para>
+     the number of bandwidth allocation units to release when needed
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   This high level connection management function automatically locates the
+   appropriate plug on <parameter>output</parameter> and <parameter>input</parameter> based upon the channel number. It 
+   gracefully handles when node plugs exist on <parameter>output</parameter> and/or <parameter>input</parameter>. When there 
+   are no more point-to-point connections on output plug, then the channel and
+   bandwidth are released.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   0 on success or -1 on failure
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-cmp-normalize-output">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_cmp_normalize_output</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_cmp_normalize_output</refname>
+ <refpurpose>
+     make IRM channels available consistent with plug
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_cmp_normalize_output </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>handle</parameter></paramdef>
+   <paramdef>nodeid_t <parameter>node</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>handle</parameter></term>
+   <listitem>
+    <para>
+     a libraw1394 handle
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>node</parameter></term>
+   <listitem>
+    <para>
+     node id of the transmitter
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   Loops over every output plug on the node, and if it has a point-to-point or
+   broadcast connection, then make sure the channel is allocated with the 
+   isochronous resource manager. This is used to help provide bus sanity and prevent
+   a channel from being used on a subsequent connection that might really already be
+   in usage!
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   0 on success or -1 ojn failure
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-plug-impr-init">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_plug_impr_init</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_plug_impr_init</refname>
+ <refpurpose>
+     Initialise hosting of local input plug registers.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_plug_impr_init </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>h</parameter></paramdef>
+   <paramdef>unsigned int <parameter>data_rate</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>h</parameter></term>
+   <listitem>
+    <para>
+     A raw1394 handle.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>data_rate</parameter></term>
+   <listitem>
+    <para>
+     an enum iec61883_datarate
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   Initially, no plugs are available; call <function>iec61883_plug_add_ipcr</function> to add
+   plugs.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   </para><para>
+
+   0 for success, -EINVAL if data_rate is invalid, or or -1 (errno) on 
+   libraw1394 failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-plug-impr-clear">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_plug_impr_clear</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_plug_impr_clear</refname>
+ <refpurpose>
+     Set the number of input plugs to zero.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_plug_impr_clear </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>h</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>h</parameter></term>
+   <listitem>
+    <para>
+     A raw1394 handle.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-plug-impr-close">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_plug_impr_close</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_plug_impr_close</refname>
+ <refpurpose>
+     Stop hosting local input plugs.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_plug_impr_close </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>h</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>h</parameter></term>
+   <listitem>
+    <para>
+     A raw1394 handle.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   </para><para>
+
+   0 for success, -1 (errno) on error.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-plug-ipcr-add">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_plug_ipcr_add</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_plug_ipcr_add</refname>
+ <refpurpose>
+     Add a local input plug.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_plug_ipcr_add </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>h</parameter></paramdef>
+   <paramdef>unsigned int <parameter>online</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>h</parameter></term>
+   <listitem>
+    <para>
+     A raw1394 handle.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>online</parameter></term>
+   <listitem>
+    <para>
+     The initial state of the plug: online (1) or not (0).
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   You must call <function>iec61883_plug_impr_init</function> before this.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   </para><para>
+
+   plug number (&gt;=0) on sucess or -EINVAL if online is not 0 or 1, 
+   -ENOSPC if maximum plugs reached, or -EPERM if <function>iec61883_plug_impr_init</function> 
+   not called.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-plug-ompr-init">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_plug_ompr_init</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_plug_ompr_init</refname>
+ <refpurpose>
+     Initialise hosting of local output plug registers.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_plug_ompr_init </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>h</parameter></paramdef>
+   <paramdef>unsigned int <parameter>data_rate</parameter></paramdef>
+   <paramdef>unsigned int <parameter>bcast_channel</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>h</parameter></term>
+   <listitem>
+    <para>
+     A raw1394 handle
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>data_rate</parameter></term>
+   <listitem>
+    <para>
+     one of enum iec61883_datarate
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>bcast_channel</parameter></term>
+   <listitem>
+    <para>
+     the broacast channel base (0 - 63)
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   Initially, no plugs are available; call <function>iec61883_plug_add_opcr</function> to add
+   plugs.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   </para><para>
+
+   0 for success, -EINVAL if data_rate or bcast_channel is invalid, 
+   or or -1 (errno) on libraw1394 failure.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-plug-ompr-clear">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_plug_ompr_clear</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_plug_ompr_clear</refname>
+ <refpurpose>
+     Set the number of output plugs to zero.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>void <function>iec61883_plug_ompr_clear </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>h</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>h</parameter></term>
+   <listitem>
+    <para>
+     A raw1394 handle.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-plug-ompr-close">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_plug_ompr_close</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_plug_ompr_close</refname>
+ <refpurpose>
+     Stop hosting local output plugs.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_plug_ompr_close </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>h</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>h</parameter></term>
+   <listitem>
+    <para>
+     A raw1394 handle.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   </para><para>
+
+   0 for success, -1 (errno) on error.
+</para>
+</refsect1>
+</refentry>
+
+<refentry id="API-iec61883-plug-opcr-add">
+<refentryinfo>
+ <title>LINUX</title>
+ <productname>Kernel Hackers Manual</productname>
+ <date>August 2009</date>
+</refentryinfo>
+<refmeta>
+ <refentrytitle><phrase>iec61883_plug_opcr_add</phrase></refentrytitle>
+ <manvolnum>9</manvolnum>
+ <refmiscinfo class="version">unknown kernel version</refmiscinfo>
+</refmeta>
+<refnamediv>
+ <refname>iec61883_plug_opcr_add</refname>
+ <refpurpose>
+     Add a local output plug.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis><funcprototype>
+   <funcdef>int <function>iec61883_plug_opcr_add </function></funcdef>
+   <paramdef>raw1394handle_t <parameter>h</parameter></paramdef>
+   <paramdef>unsigned int <parameter>online</parameter></paramdef>
+   <paramdef>unsigned int <parameter>overhead_id</parameter></paramdef>
+   <paramdef>unsigned int <parameter>payload</parameter></paramdef>
+  </funcprototype></funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>h</parameter></term>
+   <listitem>
+    <para>
+     A raw1394 handle.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>online</parameter></term>
+   <listitem>
+    <para>
+     The initial state of the plug: online (1) or not (0).
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>overhead_id</parameter></term>
+   <listitem>
+    <para>
+     one of enum iec61883_pcr_overhead_id.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>payload</parameter></term>
+   <listitem>
+    <para>
+     the maximum number of quadlets per packet.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+<title>Description</title>
+<para>
+   You must call <function>iec61883_plug_ompr_init</function> before this.
+</para>
+</refsect1>
+<refsect1>
+<title>Returns</title>
+<para>
+   </para><para>
+
+   plug number (&gt;=0) on sucess, -EINVAL if online is not 0 or 1 or
+   if overhead_id or payload are out of range, -ENOSPC if maximum plugs 
+   reached, or -EPERM if <function>iec61883_plug_ompr_init</function> not called.
+</para>
+</refsect1>
+</refentry>
+
+  </chapter>
+
+</book>
